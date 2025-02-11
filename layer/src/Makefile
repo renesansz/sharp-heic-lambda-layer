@@ -1,11 +1,12 @@
 # Library Versions
 WEBP_VERSION=1.3.2
 LIBDE265_VERSION=1.0.12
-LIBHEIF_VERSION=1.12.0
+LIBHEIF_VERSION=1.19.5
 VIPS_VERSION=8.12.2
-SHARP_VERSION=0.30.7
+SHARP_VERSION=0.33.5
 
 PREFIX_PATH=/opt
+ARTIFACTS_DIR=$(PREFIX_PATH)/artifacts
 
 export PKG_CONFIG_PATH=$(PREFIX_PATH)/lib/pkgconfig
 
@@ -30,7 +31,7 @@ libde265:
 libheif: libde265
 	# libheif
 	curl -L https://github.com/strukturag/libheif/releases/download/v$(LIBHEIF_VERSION)/libheif-$(LIBHEIF_VERSION).tar.gz | tar zx
-	cd libheif-$(LIBHEIF_VERSION) && ./autogen.sh && ./configure --prefix=$(PREFIX_PATH) && make V=0 && make install
+	cd libheif-$(LIBHEIF_VERSION) && ./scripts/install-ci-linux.sh && make V=0 && make install
 
 libvips: installLib libheif libwebp
 	# libvips
@@ -38,15 +39,15 @@ libvips: installLib libheif libwebp
 	cd vips-$(VIPS_VERSION) && ./configure --prefix=$(PREFIX_PATH) && make V=0 && make install
 
 installLib:
-	yum install -y yum-plugin-ovl && \
-	yum install -y \
-		glib2-devel \
-		expat-devel \
-		libjpeg-devel \
-		libjpeg-turbo-devel \
-		libpng-devel \
-		giflib-devel \
-		libexif-devel \
-		librsvg2-devel \
-		libtiff-devel \
-		lcms2-devel
+	sudo apt-get update && \
+	sudo apt-get install -y \
+		libglib2.0-dev \
+		libexpat1-dev \
+		libjpeg-dev \
+		libjpeg-turbo8-dev \
+		libpng-dev \
+		libgif-dev \
+		libexif-dev \
+		librsvg2-dev \
+		libtiff-dev \
+		liblcms2-dev
